@@ -9,10 +9,8 @@
 #include <vector>
 #include <random>
 
-#include <ros/ros.h>
 
 using namespace std;
-using namespace ros;
 using namespace Eigen;
 
 class RandomRouteGenerator
@@ -87,8 +85,7 @@ VectorXd allocateTime(const MatrixXd &wayPs,
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "example1_node");
-    ros::NodeHandle nh_;
+
 
     RandomRouteGenerator routeGen(Array3d(-16, -16, -16), Array3d(16, 16, 16));
 
@@ -105,16 +102,16 @@ int main(int argc, char **argv)
     iS.setZero();
     fS.setZero();
     Vector3d zeroVec(0.0, 0.0, 0.0);
-    Rate lp(1000);
+   
     int groupSize = 100;
 
     std::chrono::high_resolution_clock::time_point tc0, tc1, tc2;
     double d0, d1;
 
-    for (int i = 2; i <= 128 && ok(); i++)
+    for (int i = 2; i <= 128; i++)
     {
         d0 = d1 = 0.0;
-        for (int j = 0; j < groupSize && ok(); j++)
+        for (int j = 0; j < groupSize; j++)
         {
             route = routeGen.generate(i);
             iS.col(0) << route.leftCols<1>();
@@ -145,8 +142,7 @@ int main(int argc, char **argv)
                   << " MinJerk Comp. Time: " << d0 / groupSize << " s"
                   << " MinSnap Comp. Time: " << d1 / groupSize << " s" << std::endl;
 
-        ros::spinOnce();
-        lp.sleep();
+      
     }
 
     return 0;

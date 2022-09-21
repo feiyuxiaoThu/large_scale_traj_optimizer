@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 {
 
 
-    RandomRouteGenerator routeGen(Array3d(-16, -16, -16), Array3d(16, 16, 16));
+    RandomRouteGenerator routeGen(Array3d(0, 0, 0), Array3d(20, -4.5, 0));
 
     min_jerk::JerkOpt jerkOpt;
     min_jerk::Trajectory minJerkTraj;
@@ -103,12 +103,12 @@ int main(int argc, char **argv)
     fS.setZero();
     Vector3d zeroVec(0.0, 0.0, 0.0);
    
-    int groupSize = 100;
+    int groupSize = 10;
 
     std::chrono::high_resolution_clock::time_point tc0, tc1, tc2;
     double d0, d1;
 
-    for (int i = 2; i <= 128; i++)
+    for (int i = 2; i <= 2; i++)
     {
         d0 = d1 = 0.0;
         for (int j = 0; j < groupSize; j++)
@@ -127,6 +127,8 @@ int main(int argc, char **argv)
             jerkOpt.getTraj(minJerkTraj);
             tc1 = std::chrono::high_resolution_clock::now();
 
+            
+
             d0 += std::chrono::duration_cast<std::chrono::duration<double>>(tc1 - tc0).count();
 
             tc1 = std::chrono::high_resolution_clock::now();
@@ -137,6 +139,21 @@ int main(int argc, char **argv)
 
             d1 += std::chrono::duration_cast<std::chrono::duration<double>>(tc2 - tc1).count();
         }
+
+        /* For debug
+            Use this for trajectory generation
+        */
+
+        std::cout << " whole Duration =" << minJerkTraj.getTotalDuration() <<"\n" << "Durations ="<< "\n" << minJerkTraj.getDurations() << "\n" << "piece num = " << minJerkTraj.getPieceNum()<<"\n" << "piece bounds" << "\n" << minJerkTraj.getPositions() << std::endl;
+
+        //std::cout << "pos coff" << "\n" << minJerkTraj.getPos() << "\n" << "vel coff" << minJerkTraj.getV
+
+        std::cout << "trajectory maxvel"<< "\t"  << minJerkTraj.getMaxVelRate() << "\t" << "max acc"<< "\t"  << minJerkTraj.getMaxAccRate()<< std::endl;
+
+        double t_out1 = 5.89218;
+        std::cout << "trajectory position at t=" << t_out1 << "\n" << minJerkTraj.getPos(t_out1)<<std::endl;
+        double t_out2 = 8.72185;
+        std::cout << "trajectory position at t=" << t_out2 << "\n" << minJerkTraj.getPos(t_out2)<<std::endl;
 
         std::cout << "Piece Number: " << i
                   << " MinJerk Comp. Time: " << d0 / groupSize << " s"

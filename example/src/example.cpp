@@ -103,7 +103,7 @@ int main(int argc, char **argv)
     fS.setZero();
     Vector3d zeroVec(0.0, 0.0, 0.0);
    
-    int groupSize = 10;
+    int groupSize = 5;
 
     std::chrono::high_resolution_clock::time_point tc0, tc1, tc2;
     double d0, d1;
@@ -114,9 +114,12 @@ int main(int argc, char **argv)
         for (int j = 0; j < groupSize; j++)
         {
             route = routeGen.generate(i);
+            std::cout << "route debug" << route << std::endl;
+            std::cout <<"route piece" << route.cols() -1 << std::endl;
             iS.col(0) << route.leftCols<1>();
             fS.col(0) << route.rightCols<1>();
-            ts = allocateTime(route, 3.0, 3.0);
+            ts = allocateTime(route, 3.0, 3.0); // here
+            std::cout << "important point allocateTime" <<  ts << std::endl;
 
             iSS << iS, Eigen::MatrixXd::Zero(3, 1);
             fSS << fS, Eigen::MatrixXd::Zero(3, 1);
@@ -144,11 +147,29 @@ int main(int argc, char **argv)
             Use this for trajectory generation
         */
 
+        //Piece1 = 
+        min_jerk::Piece Piece1 = minJerkTraj[0];
+        min_jerk::Piece Piece2 = minJerkTraj[0];
+
+        std::cout << "piece1 duration t" << Piece1.getDuration() << std::endl;
+
+        std::cout << "trajectory piece CoefficientMat" << "\t" << "Piece1" << "pos" << "\n"<< Piece1.getCoeffMat() << "\n"<<"\t" << "vel" << "\n" << Piece1.getVelCoeffMat()
+          <<"\n"<<"\t" << "acc" << "\n" << Piece1.getAccCoeffMat()<< std::endl;
+        //std::cout << "trajectory piece CoefficientMat" << "\t" << "Piece2" << "pos"<< Piece2.getCoeffMat() << "\t" << "vel" << Piece2.getVelCoeffMat()
+        //  <<"\t" << "acc" << Piece2.getAccCoeffMat()<< std::endl;
+
+        
+
+        std::cout << "trajectory size" <<minJerkTraj.getPieceNum() << std::endl;
+
+
         std::cout << " whole Duration =" << minJerkTraj.getTotalDuration() <<"\n" << "Durations ="<< "\n" << minJerkTraj.getDurations() << "\n" << "piece num = " << minJerkTraj.getPieceNum()<<"\n" << "piece bounds" << "\n" << minJerkTraj.getPositions() << std::endl;
 
         //std::cout << "pos coff" << "\n" << minJerkTraj.getPos() << "\n" << "vel coff" << minJerkTraj.getV
 
         std::cout << "trajectory maxvel"<< "\t"  << minJerkTraj.getMaxVelRate() << "\t" << "max acc"<< "\t"  << minJerkTraj.getMaxAccRate()<< std::endl;
+
+        std::cout << "trajectory position" << "\t" << minJerkTraj.getPositions() << "\t" << std::endl;
 
         double t_out1 = 5.89218;
         std::cout << "trajectory position at t=" << t_out1 << "\n" << minJerkTraj.getPos(t_out1)<<std::endl;
